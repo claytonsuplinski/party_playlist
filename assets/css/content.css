@@ -1,0 +1,61 @@
+#content{
+	position:fixed;
+	bottom:0;
+	right:0;
+	width:100%;
+	height:calc( 100% - 44px );
+	background:#111;
+	color:#fff;
+	font-family:'Cabin Condensed';
+	text-align:center;
+	overflow-y:auto;
+	outline:0;
+	
+	background-size:cover;
+	background-repeat:no-repeat;
+	background-position:center;
+	
+	-webkit-transition:width 1s;
+	        transition:width 1s;
+}
+
+#view-content{
+	padding-top:15px;
+}
+
+audio{
+	width:100%;
+}
+
+table.songs-list{
+	width:calc( 100% - 10px );
+	margin:auto;
+	border-collapse:separate;
+	border-spacing:1px 5px;
+}
+
+.songs-list td.label{
+	width:300px;
+	background:#1e3e80;
+	color:#fff;
+	border:1px solid #e070ff;
+	font-size:14px;
+	padding:0 10px;
+}
+
+.songs-list td.label:hover{
+	background:#146c93;
+	cursor:pointer;
+}
+
+.songs-list td.label hr{
+	margin:2px auto 0 0;
+	width:40%;
+	border-bottom:0;
+	border-top:1px solid rgba(255,255,255,0.3);
+}
+
+.songs-list td.audio{
+	background:#00ff1e;
+	border:1px solid #0037ec;
+}
