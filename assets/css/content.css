@@ -34,6 +34,21 @@ table.songs-list{
 	border-spacing:1px 5px;
 }
 
+.songs-list td.index{
+	width:26px;
+	background:#423157;
+	color:#fff;
+	border:1px solid #4ea463;
+	font-size:14px;
+	text-align:right;
+	padding-right:10px;
+}
+
+.songs-list td.index.active{
+	background:#7d591b;
+	border-color:#cfce51;
+}
+
 .songs-list td.label{
 	width:300px;
 	background:#1e3e80;
@@ -58,4 +73,24 @@ table.songs-list{
 .songs-list td.audio{
 	background:#00ff1e;
 	border:1px solid #0037ec;
+}
+
+.songs-info{
+	display:inline-block;
+	width:100px;
+	background:#757b23;
+	border:1px solid #2fba98;
+	padding:2px 0;
+	margin:2px 5px;
+	border-radius:100px;
+}
+
+.songs-info.wide{
+	width:200px;
+}
+
+.songs-info #curr-time,
+.songs-info #total-time{
+	display:inline-block;
+	width:92px;
 }

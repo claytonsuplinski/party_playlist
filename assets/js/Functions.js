@@ -17,7 +17,7 @@ MIA.functions.get_rank_class = function(rank){
 	return '';
 };
 
-MIA.functions.get_hr_duration = function( t ){
+MIA.functions.get_hr_duration = function( t, as_string ){
 	var values = [
 		{ unit : 'h', factor : 3600 },
 		{ unit : 'm', factor :   60 },
@@ -29,7 +29,8 @@ MIA.functions.get_hr_duration = function( t ){
 		time -= v.val * v.factor;
 	});
 
-	return values.filter( v => v.val ).map(function( v) { return v.val + v.unit; }).join(' ') || '0s';
+	if( as_string ) return values.filter( v => v.val ).map(function( v) { return v.val + v.unit; }).join(' ') || '0s';
+	return values.map(function( v ){ return MIA.functions.pad( v.val, 2 ); }).join(':');
 };
 
 MIA.functions.get_rating_color = function(rating){
@@ -58,6 +59,12 @@ MIA.functions.get_diff_color = function( diff ){
 		g +=  10 * diff;
 	}
 	return 'rgb(' + [r,g,b].join(', ') + ')';
+};
+
+MIA.functions.pad = function(num, decimal_place, delimiter){
+	var delimiter = delimiter || '0';
+	var num = num + '';
+	return num.length >= decimal_place ? num : new Array(decimal_place - num.length + 1).join(delimiter) + num;
 };
 
 MIA.functions.get_view_key = function(str){
