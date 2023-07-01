@@ -34,7 +34,7 @@ MIA.content.draw = function( p ){
 	
 	var data = this.data.slice();
 	
-	this.view_names = [ 'Main' ];
+	this.view_names = [ 'Main', 'Home' ];
 
 	$("#content").html(
 		'<div id="view-content">' +
