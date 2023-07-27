@@ -1,7 +1,12 @@
-MIA.content = { views : {} };
+MIA.content = {
+	views  : {},
+	_views : [
+		{ name : 'Home' },
+	].concat( MIA.config.playlists.slice() ),
+};
 
 MIA.content.load = function(){
-	this.select_view( 'Main' );
+	this.select_view( 'Home' );
 
 	MIA.pages = new JL.pages({
 		container        : '#pages',
@@ -14,16 +19,27 @@ MIA.content.load = function(){
 	this.draw();
 };
 
+MIA.content.get_view = function( view ){
+	return this._views.find(function( v ){
+		return v.name == view;
+	});
+};
+
 MIA.content.select_view = function( view ){
-	this.view = view;
-	this.view_key = MIA.functions.get_view_key( view );
-	this.curr_view = this.views[ this.view_key ];
+	var matching_view = this.get_view( view );
+	console.log( view, matching_view );
+	if( matching_view ){
+		this.view = view;
+		this.view_key = MIA.functions.get_view_key( view );
+		this.curr_view = this.views[ this.view_key ];
+		if( !this.curr_view && matching_view.songs ){
+			this.curr_view = new MIA.playlist( matching_view );
+		}
+	}
 };
 
 MIA.content.set_view = function( view ){
 	this.select_view( view );
-	this.table_sort = 'Total';
-	this.table_sort_reversed = false;
 	this.draw();
 };
 
@@ -33,8 +49,6 @@ MIA.content.draw = function( p ){
 	var p = p || {};
 	
 	var data = this.data.slice();
-	
-	this.view_names = [ 'Main', 'Home' ];
 
 	$("#content").html(
 		'<div id="view-content">' +
@@ -51,11 +65,11 @@ MIA.content.draw = function( p ){
 		not_responsive : true,
 		options        : [
 			{
-				options    : MIA.content.view_names.map(function( option ){
+				options    : self._views.map(function( option ){
 					return {
-						name     : option + ' View',
-						value    : option,
-						selected : ( option == self.view )
+						name     : option.name,
+						value    : option.name,
+						selected : ( option.name == self.view )
 					};
 				}),
 				attributes : {
@@ -64,5 +78,9 @@ MIA.content.draw = function( p ){
 				}
 			},
 		]
+	});
+
+	$( '#navbar-title' ).click(function(){
+		self.set_view( 'Home' );
 	});
 };

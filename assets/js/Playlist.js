@@ -157,7 +157,7 @@ MIA.playlist.prototype.get_content = function( self, p ){
 			this.songs.map(function( song, idx ){
 				return '<tr>' +
 					'<td class="index">' + ( idx + 1 ) + '</td>' +
-					'<td class="label" onclick="MIA.content.views.main.set_song(' + idx + ');">' + song.name + '<hr></td>' +
+					'<td class="label" onclick="MIA.content.curr_view.set_song(' + idx + ');">' + song.name + '<hr></td>' +
 					'<td class="audio"><audio id="song-' + idx + '" src="./assets/data/' + _this.songs[ idx ].filename + '" controls></audio></td>' +
 				'</tr>';
 			}).join('') +

@@ -1,10 +1,10 @@
 MIA.content.views.home = {};
 
 MIA.content.views.home.get_content = function( self, p ){
-	// TODO : Make different views for different playlists 
-	// 		-Walk up - everyone else
-	// 		-Walk up - bride
-	// 		-First dances
-	// 		-Reception
-	return 'List all playlists here';
+	return '<div class="header">Playlists <hr></div>' +
+		MIA.config.playlists.map(function( playlist ){
+			return '<div class="home-button" onclick="MIA.content.set_view(\'' + playlist.name + '\');">' +
+				playlist.name +
+			'</div>';
+		}).join('');
 };

@@ -1,0 +1,10 @@
+.home-button{
+	background:       #008000;
+	outline:3px solid #008000;
+	border :1px solid #dd3;
+	padding:10px;
+	width:350px;
+	margin:auto;
+	margin-top:15px;
+	cursor:pointer;
+}

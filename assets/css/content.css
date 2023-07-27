@@ -23,6 +23,15 @@
 	padding-top:15px;
 }
 
+.header{
+}
+
+.header hr{
+	width:200px;
+	border:0;
+	border-top:1px solid rgba(255,255,255,0.45);
+}
+
 audio{
 	width:100%;
 }

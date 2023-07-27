@@ -35,6 +35,11 @@
 	border:1px solid rgba(82, 148, 204, 0.5);
 	font-family:'Pacifico';
 	text-shadow:0px 0px 9px #ffffa6;
+	cursor:pointer;
+}
+
+#navbar #navbar-title:hover{
+	background:#3e4a9f;
 }
 
 #navbar #navbar-title .logo{
