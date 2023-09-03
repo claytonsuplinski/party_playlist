@@ -27,7 +27,6 @@ MIA.content.get_view = function( view ){
 
 MIA.content.select_view = function( view ){
 	var matching_view = this.get_view( view );
-	console.log( view, matching_view );
 	if( matching_view ){
 		this.view = view;
 		this.view_key = MIA.functions.get_view_key( view );

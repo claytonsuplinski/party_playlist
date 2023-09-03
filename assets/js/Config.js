@@ -25,8 +25,8 @@ MIA.config.playlists = [
 	{
 		name  : 'Reception',
 		songs : [
-			{ filename :    'sm.mp3', name : 'Sunday Morning - Maroon 5'                 },
-			{ filename :   'ctm.mp3', name : 'Cooler Than Me - Mike Posner'              },
+			{ filename :    'sm.mp3', name : 'Sunday Morning - Maroon 5'                , transition_out :  0 },
+			{ filename :   'ctm.mp3', name : 'Cooler Than Me - Mike Posner'             , transition_out : 10 },
 			{ filename :    'dy.mp3', name : 'Die Young - Kesha'                         },
 			{ filename :    'ff.mp3', name : 'Fireflies (Remix) - Owl City'              },
 			{ filename :   'itd.mp3', name : 'In the Dark - Dev'                         },

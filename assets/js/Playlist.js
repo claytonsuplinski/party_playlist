@@ -45,8 +45,61 @@ MIA.playlist.prototype.init_analysis = function(){
 	request.send();
 };
 
+MIA.playlist.prototype.resume = function( preserve_volume ){
+	$( '#play-button' ).removeClass( 'click-me' );
+	$( "#song-" + this.curr_song ).each(function( i, audio ){
+		audio.play();
+		if( !preserve_volume ) audio.volume = 1;
+	});
+};
+
+MIA.playlist.prototype.pause = function(){
+	$( "audio" ).each(function( i, audio ){
+		audio.pause();
+		audio.volume = 0;
+	});
+	$( '#play-button' ).addClass( 'click-me' );
+};
+
+MIA.playlist.prototype.fade_in = function(){
+	var id = "#song-" + this.curr_song;
+	if( !$( id ).is( ':animated' ) ){
+		if( !$( id )[ 0 ].volume ){
+			this.resume( true );
+			this.fade({
+				id,
+				val      : 1,
+				duration : 3000,
+			});
+		}
+	}
+};
+
+MIA.playlist.prototype.fade_out = function(){
+	var self = this;
+	var id = 'audio';
+	if( !$( id ).is( ':animated' ) ){
+		if( $( "#song-" + this.curr_song )[ 0 ].volume ){
+			this.fade({
+				id,
+				val      : 0,
+				duration : 3000,
+				callback : function(){
+					self.pause();
+				},
+			});
+		}
+	}
+};
+
 MIA.playlist.prototype.fade = function( p ){
-	$( p.id ).animate( { volume : p.val }, p.duration || 5000, p.callback ); 
+	$( p.id ).animate( { volume : p.val }, ( p.duration !== undefined ? p.duration : 5000 ), p.callback ); 
+};
+
+MIA.playlist.prototype.get_transition_length = function( song_idx ){
+	var curr_song_cfg = this.songs[ song_idx !== undefined ? song_idx : this.curr_song ];
+	if( curr_song_cfg.transition_out !== undefined ) return curr_song_cfg.transition_out;
+	return MIA.config.transition_length;
 };
 
 MIA.playlist.prototype.get_next_index = function(){
@@ -59,8 +112,9 @@ MIA.playlist.prototype.transition_to_next_song = function(){
 	var curr_id = "#song-" + this.curr_song;
 	var next_id = "#song-" + this.get_next_index();
 	$( next_id )[0].play();
-	this.fade({ id : curr_id, val : 0, duration : MIA.config.transition_length * 1000 });
-	this.fade({ id : next_id, val : 1, duration : MIA.config.transition_length * 1000, callback : function(){
+	var transition_length = this.get_transition_length();
+	this.fade({ id : curr_id, val : 0, duration : transition_length * 1000 });
+	this.fade({ id : next_id, val : 1, duration : transition_length * 1000, callback : function(){
 		var next_index = self.get_next_index();
 		if( next_index == 0 ){
 			$( "audio" ).each(function( i, audio ){
@@ -79,22 +133,24 @@ MIA.playlist.prototype.transition_to_next_song = function(){
 };
 
 MIA.playlist.prototype.get_curr_time = function(){
+	var self = this;
 	var curr_time = 0;
 	$( ".songs-list audio" ).each(function( i ){
-		if( this.currentTime ) curr_time += this.currentTime - ( i ? MIA.config.transition_length : 0 );
+		if( this.currentTime ) curr_time += this.currentTime - ( i ? self.get_transition_length( i ) : 0 );
 	});
 	return curr_time;
 };
 
 MIA.playlist.prototype.get_total_time = function(){
+	var self = this;
 	var total_time = 0;
 	$( ".songs-list audio" ).each(function( i ){
-		total_time += this.duration - ( i ? MIA.config.transition_length : 0 );
+		total_time += this.duration - ( i ? self.get_transition_length( i ) : 0 );
 	});
 	return total_time;
 };
 
-MIA.playlist.prototype.set_song = function( idx ){
+MIA.playlist.prototype.set_song = function( idx, no_autoplay ){
 	var id = "#song-" + idx;
 	$( "audio" ).stop();
 	$( "audio" ).each(function( i, audio ){
@@ -103,7 +159,7 @@ MIA.playlist.prototype.set_song = function( idx ){
 		audio.volume      = 0;
 	});
 	var selected_audio = $( id )[0];
-	selected_audio.play();
+	if( !no_autoplay ) selected_audio.play();
 	selected_audio.volume = 1;
 	this.curr_song = idx;
 	   $( ".songs-list td.index" ).removeClass(                  'active' );
@@ -119,13 +175,13 @@ MIA.playlist.prototype.update = function(){
 
 	if( this.curr_song === undefined ){
 		this.curr_song = 0;
-		this.set_song( this.curr_song );
+		this.set_song( this.curr_song, true );
 	}
 	else{
 		var curr_id = "#song-" + this.curr_song;
 		var curr_song = $( curr_id )[0];
 		var time_remaining = curr_song.duration - curr_song.currentTime;
-		if( time_remaining <= MIA.config.transition_length && !this.is_transitioning ) this.transition_to_next_song();
+		if( time_remaining <= this.get_transition_length() && !this.is_transitioning ) this.transition_to_next_song();
 
 		this.curr_time = this.get_curr_time();
 		$( "#curr-time" ).html( MIA.functions.get_hr_duration( this.curr_time ) );
@@ -146,14 +202,7 @@ MIA.playlist.prototype.get_content = function( self, p ){
 
 	this.update_interval = setInterval(function(){ _this.update(); }, 500);
 
-	return '<div id="progress">' + 
-			'<div class="songs-info wide">' + 
-				'<div id="curr-time"></div> / ' + 
-				'<div id="total-time"></div>' +
-			'</div>' +
-			'<div class="songs-info" id="completion-percentage"></div>' +
-		'</div>' +
-		'<table class="songs-list">' +
+	return '<table class="songs-list">' +
 			this.songs.map(function( song, idx ){
 				return '<tr>' +
 					'<td class="index">' + ( idx + 1 ) + '</td>' +
@@ -161,5 +210,18 @@ MIA.playlist.prototype.get_content = function( self, p ){
 					'<td class="audio"><audio id="song-' + idx + '" src="./assets/data/' + _this.songs[ idx ].filename + '" controls></audio></td>' +
 				'</tr>';
 			}).join('') +
-		'</table>';
+		'</table>' +
+		'<div id="playback-controls">' +
+			'<div id="progress">' + 
+				'<div class="songs-control no-highlight click-me" onclick="MIA.content.curr_view.resume();" id="play-button"><i class="fa fa-play"></i></div>' +
+				'<div class="songs-control no-highlight"          onclick="MIA.content.curr_view.pause();"                  ><i  class="fa fa-pause"></i></div>' +
+				'<div class="songs-info wide">' + 
+					'<div id="curr-time"></div> / ' + 
+					'<div id="total-time"></div>' +
+				'</div>' +
+				'<div class="songs-info" id="completion-percentage"></div>' +
+				'<div class="songs-control no-highlight" onclick="MIA.content.curr_view.fade_in();">Fade In</div>' +
+				'<div class="songs-control no-highlight" onclick="MIA.content.curr_view.fade_out();">Fade Out</div>' +
+			'</div>' +		
+		'</div>';
 };

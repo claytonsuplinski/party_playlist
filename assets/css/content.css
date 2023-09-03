@@ -1,9 +1,9 @@
 #content{
 	position:fixed;
-	bottom:0;
+	top:48px;
 	right:0;
 	width:100%;
-	height:calc( 100% - 44px );
+	height:calc( 100% - 88px );
 	background:#111;
 	color:#fff;
 	font-family:'Cabin Condensed';
@@ -20,7 +20,7 @@
 }
 
 #view-content{
-	padding-top:15px;
+	padding:15px;
 }
 
 .header{
@@ -84,7 +84,8 @@ table.songs-list{
 	border:1px solid #0037ec;
 }
 
-.songs-info{
+.songs-info,
+.songs-control{
 	display:inline-block;
 	width:100px;
 	background:#757b23;
@@ -102,4 +103,37 @@ table.songs-list{
 .songs-info #total-time{
 	display:inline-block;
 	width:92px;
+}
+
+.songs-control{
+	width:auto;
+	padding:3px 10px;
+	border-radius:0;
+	background:#1e4053;
+	border-color:#2978a5;
+	cursor:pointer;
+}
+
+.songs-control:hover{
+	background:#2c6381;
+}
+
+.songs-control.click-me{
+	animation: click-me 1s linear infinite;
+}
+
+@keyframes click-me{
+  0%  { background:#1e4053; }
+  50%  { background:#84d0fb; }
+  100%{ background:#1e4053; }
+}
+
+#playback-controls{
+	position:fixed;
+	left:0;
+	bottom:0;
+	width:100%;
+	padding:5px;
+	background:#000;
+	border-top:1px solid rgba(255,255,255,0.25);
 }
