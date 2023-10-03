@@ -10,6 +10,7 @@ MIA.config.playlists = [
 	{
 		name  : 'Walk Up - Everyone except bride',
 		songs : [
+			{ filename : 'aotc.mp3', name : 'Across the Stars -  John Williams', end_early : 10 },
 		],
 	},
 	{
@@ -27,7 +28,7 @@ MIA.config.playlists = [
 		songs : [
 			{ filename :    'sm.mp3', name : 'Sunday Morning - Maroon 5'                , transition_out :  0 },
 			{ filename :   'ctm.mp3', name : 'Cooler Than Me - Mike Posner'             , transition_out : 10 },
-			{ filename :    'dy.mp3', name : 'Die Young - Kesha'                         },
+			{ filename :    'dy.mp3', name : 'Die Young - Kesha'                        , end_early : 10 },
 			{ filename :    'ff.mp3', name : 'Fireflies (Remix) - Owl City'              },
 			{ filename :   'itd.mp3', name : 'In the Dark - Dev'                         },
 			{ filename :    'jd.m4a', name : 'Just Dance - Lady Gaga'                    },

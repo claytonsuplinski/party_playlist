@@ -10,4 +10,5 @@ MIA.hashlinks.on_start = function(){
 	MIA.content.load();
 };
 
-MIA.hashlinks.start();
+window.onhashchange = function(){ MIA.hashlinks.start(); };
+window.onload       = function(){ MIA.hashlinks.start(); };

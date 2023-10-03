@@ -98,8 +98,14 @@ MIA.playlist.prototype.fade = function( p ){
 
 MIA.playlist.prototype.get_transition_length = function( song_idx ){
 	var curr_song_cfg = this.songs[ song_idx !== undefined ? song_idx : this.curr_song ];
-	if( curr_song_cfg.transition_out !== undefined ) return curr_song_cfg.transition_out;
-	return MIA.config.transition_length;
+	var transition_length = MIA.config.transition_length;
+	if( curr_song_cfg.transition_out !== undefined ) transition_length = curr_song_cfg.transition_out;
+	return transition_length;
+};
+
+MIA.playlist.prototype.get_end_offset = function( song_idx ){
+	var curr_song_cfg = this.songs[ song_idx !== undefined ? song_idx : this.curr_song ];
+	return curr_song_cfg.end_early || 0;
 };
 
 MIA.playlist.prototype.get_next_index = function(){
@@ -136,7 +142,7 @@ MIA.playlist.prototype.get_curr_time = function(){
 	var self = this;
 	var curr_time = 0;
 	$( ".songs-list audio" ).each(function( i ){
-		if( this.currentTime ) curr_time += this.currentTime - ( i ? self.get_transition_length( i ) : 0 );
+		if( this.currentTime ) curr_time += this.currentTime - ( i ? self.get_transition_length( i ) : 0 ) - ( i ? self.get_end_offset( i ) : 0 );
 	});
 	return curr_time;
 };
@@ -145,7 +151,7 @@ MIA.playlist.prototype.get_total_time = function(){
 	var self = this;
 	var total_time = 0;
 	$( ".songs-list audio" ).each(function( i ){
-		total_time += this.duration - ( i ? self.get_transition_length( i ) : 0 );
+		total_time += this.duration - ( i ? self.get_transition_length( i ) : 0 ) - ( i ? self.get_end_offset( i ) : 0 );
 	});
 	return total_time;
 };
@@ -181,7 +187,7 @@ MIA.playlist.prototype.update = function(){
 		var curr_id = "#song-" + this.curr_song;
 		var curr_song = $( curr_id )[0];
 		var time_remaining = curr_song.duration - curr_song.currentTime;
-		if( time_remaining <= this.get_transition_length() && !this.is_transitioning ) this.transition_to_next_song();
+		if( time_remaining <= this.get_transition_length() + self.get_end_offset() && !this.is_transitioning ) this.transition_to_next_song();
 
 		this.curr_time = this.get_curr_time();
 		$( "#curr-time" ).html( MIA.functions.get_hr_duration( this.curr_time ) );
@@ -200,7 +206,7 @@ MIA.playlist.prototype.get_content = function( self, p ){
 
 	// this.init_analysis();
 
-	this.update_interval = setInterval(function(){ _this.update(); }, 500);
+	MIA.content.update_interval = setInterval(function(){ _this.update(); }, 500);
 
 	return '<table class="songs-list">' +
 			this.songs.map(function( song, idx ){

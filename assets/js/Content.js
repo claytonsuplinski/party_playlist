@@ -6,7 +6,7 @@ MIA.content = {
 };
 
 MIA.content.load = function(){
-	this.select_view( 'Home' );
+	this.select_view( MIA.hashlinks.params.view.value || 'Home' );
 
 	MIA.pages = new JL.pages({
 		container        : '#pages',
@@ -26,6 +26,7 @@ MIA.content.get_view = function( view ){
 };
 
 MIA.content.select_view = function( view ){
+	if( this.update_interval ) clearInterval( this.update_interval );
 	var matching_view = this.get_view( view );
 	if( matching_view ){
 		this.view = view;
@@ -38,8 +39,10 @@ MIA.content.select_view = function( view ){
 };
 
 MIA.content.set_view = function( view ){
-	this.select_view( view );
-	this.draw();
+	if( view == 'Home' ) MIA.hashlinks.remove( 'view' );
+	else                 MIA.hashlinks.add({ view });
+	// this.select_view( view );
+	// this.draw();
 };
 
 MIA.content.draw = function( p ){
