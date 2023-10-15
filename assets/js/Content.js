@@ -25,6 +25,14 @@ MIA.content.get_view = function( view ){
 	});
 };
 
+MIA.content.get_next_playlist = function(){
+	return this._views[ 
+		this._views.findIndex(function( v ){
+			return v.name == this.view;
+		}, this) + 1
+	];
+};
+
 MIA.content.select_view = function( view ){
 	if( this.update_interval ) clearInterval( this.update_interval );
 	var matching_view = this.get_view( view );

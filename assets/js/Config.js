@@ -16,11 +16,24 @@ MIA.config.playlists = [
 	{
 		name  : 'Walk Up - Bride only',
 		songs : [
+			{ filename : 'aty.mp3', name : 'A Thousand Years - Christina Perri', end_early : 10 },
 		],
 	},
 	{
-		name  : 'First Dances',
+		name  : 'First Dance - Couple',
 		songs : [
+		],
+	},
+	{
+		name  : 'Mother / Son Dance',
+		songs : [
+			{ filename : 'col.mp3', name : 'Circle of Life - Elton John' },
+		],
+	},
+	{
+		name  : 'Father / Daughter Dance',
+		songs : [
+			{ filename : 'db.mp3', name : 'Daydream Believer - The Monkees' },
 		],
 	},
 	{

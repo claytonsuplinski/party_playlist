@@ -208,12 +208,17 @@ MIA.playlist.prototype.get_content = function( self, p ){
 
 	MIA.content.update_interval = setInterval(function(){ _this.update(); }, 500);
 
+	var next_view = MIA.content.get_next_playlist();
+
 	return '<table class="songs-list">' +
 			this.songs.map(function( song, idx ){
 				return '<tr>' +
 					'<td class="index">' + ( idx + 1 ) + '</td>' +
 					'<td class="label" onclick="MIA.content.curr_view.set_song(' + idx + ');">' + song.name + '<hr></td>' +
-					'<td class="audio"><audio id="song-' + idx + '" src="./assets/data/' + _this.songs[ idx ].filename + '" controls></audio></td>' +
+					'<td class="audio">' + 
+						'<div class="play-button-hider"></div>' +
+						'<audio id="song-' + idx + '" src="./assets/data/' + _this.songs[ idx ].filename + '" controls></audio>' + 
+					'</td>' +
 				'</tr>';
 			}).join('') +
 		'</table>' +
@@ -228,6 +233,11 @@ MIA.playlist.prototype.get_content = function( self, p ){
 				'<div class="songs-info" id="completion-percentage"></div>' +
 				'<div class="songs-control no-highlight" onclick="MIA.content.curr_view.fade_in();">Fade In</div>' +
 				'<div class="songs-control no-highlight" onclick="MIA.content.curr_view.fade_out();">Fade Out</div>' +
+				( next_view === undefined ? '' :
+					'<div class="songs-control no-highlight" onclick="MIA.content.set_view(\'' + next_view.name + '\');" title="' + next_view.name + '">' + 
+						'Next Playlist: <span class="next-view">' + next_view.name + '</span>' +
+					'</div>'
+				) +
 			'</div>' +		
 		'</div>';
 };
