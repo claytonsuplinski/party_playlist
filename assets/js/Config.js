@@ -22,6 +22,7 @@ MIA.config.playlists = [
 	{
 		name  : 'First Dance - Couple',
 		songs : [
+			{ filename : 'iris.mp3', name : 'Iris - Goo Goo Dolls', end_early : 10 },
 		],
 	},
 	{
