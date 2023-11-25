@@ -147,6 +147,20 @@ table.songs-list{
   100%{ background:#1e4053; }
 }
 
+#click-me-note{
+	position:fixed;
+	width:145px;
+	background:rgb(164, 0, 0);
+	border:4px solid rgb(252, 41, 220);
+	border-radius:100px;
+	border-bottom-left-radius:0;
+	color:#fff;
+	bottom:48px;
+	left:15px;
+	padding:5px 15px;
+	animation: click-me 1s linear infinite;
+}
+
 #playback-controls{
 	position:fixed;
 	left:0;

@@ -47,6 +47,7 @@ MIA.playlist.prototype.init_analysis = function(){
 
 MIA.playlist.prototype.resume = function( preserve_volume ){
 	$( '#play-button' ).removeClass( 'click-me' );
+	$( '#click-me-note' ).hide();
 	$( "#song-" + this.curr_song ).each(function( i, audio ){
 		audio.play();
 		if( !preserve_volume ) audio.volume = 1;
@@ -59,6 +60,7 @@ MIA.playlist.prototype.pause = function(){
 		audio.volume = 0;
 	});
 	$( '#play-button' ).addClass( 'click-me' );
+	$( '#click-me-note' ).show();
 };
 
 MIA.playlist.prototype.fade_in = function(){
@@ -224,6 +226,7 @@ MIA.playlist.prototype.get_content = function( self, p ){
 		'</table>' +
 		'<div id="playback-controls">' +
 			'<div id="progress">' + 
+				'<div id="click-me-note">Click <i class="fa fa-play" /> to start playing this playlist.</div>' +
 				'<div class="songs-control no-highlight click-me" onclick="MIA.content.curr_view.resume();" id="play-button"><i class="fa fa-play"></i></div>' +
 				'<div class="songs-control no-highlight"          onclick="MIA.content.curr_view.pause();"                  ><i  class="fa fa-pause"></i></div>' +
 				'<div class="songs-info wide">' + 
