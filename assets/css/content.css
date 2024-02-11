@@ -21,6 +21,7 @@
 
 #view-content{
 	padding:15px;
+	padding-bottom:100px;
 }
 
 .header{
@@ -159,6 +160,39 @@ table.songs-list{
 	left:15px;
 	padding:5px 15px;
 	animation: click-me 1s linear infinite;
+}
+
+#playlist-notes{
+	position:fixed;
+	width:145px;
+	bottom:48px;
+	right:15px;
+	padding:5px;
+	background:rgb(164, 0, 0);
+	border:1px solid rgb(252, 41, 220);
+	color:#fff;
+}
+
+#playlist-notes .header{
+	font-size:14px;
+}
+
+#playlist-notes .header hr{
+	width:80%;
+	margin:3px auto;
+}
+
+#playlist-notes .note{
+	font-size:14px;
+	margin-top:5px;
+}
+
+#playlist-notes .note button{
+	font-family:'Cabin Condensed';
+	background:#1e4053;
+	border:1px solid #2fba98;
+	color:#fff;
+	padding:2px 6px;
 }
 
 #playback-controls{

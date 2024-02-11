@@ -3,8 +3,8 @@ MIA.playlist = function( p ){
 };
 
 MIA.playlist.prototype.init = function( p ){
-	// TODO : Set songs / other config info fot the playlist here.
 	this.songs = p.songs;
+	this.notes = p.notes;
 };
 
 MIA.playlist.prototype.init_analysis = function(){
@@ -46,11 +46,12 @@ MIA.playlist.prototype.init_analysis = function(){
 };
 
 MIA.playlist.prototype.resume = function( preserve_volume ){
+	var self = this;
 	$( '#play-button' ).removeClass( 'click-me' );
 	$( '#click-me-note' ).hide();
 	$( "#song-" + this.curr_song ).each(function( i, audio ){
 		audio.play();
-		if( !preserve_volume ) audio.volume = 1;
+		if( !preserve_volume ) audio.volume = self.get_max_volume();
 	});
 };
 
@@ -70,7 +71,7 @@ MIA.playlist.prototype.fade_in = function(){
 			this.resume( true );
 			this.fade({
 				id,
-				val      : 1,
+				val      : this.get_max_volume(),
 				duration : 3000,
 			});
 		}
@@ -110,6 +111,10 @@ MIA.playlist.prototype.get_end_offset = function( song_idx ){
 	return curr_song_cfg.end_early || 0;
 };
 
+MIA.playlist.prototype.get_max_volume = function( song_idx ){
+	return ( this.songs[ song_idx !== undefined ? song_idx : this.curr_song ].volume || 1 );
+};
+
 MIA.playlist.prototype.get_next_index = function(){
 	return ( this.curr_song + 1 ) % this.songs.length;
 };
@@ -117,27 +122,30 @@ MIA.playlist.prototype.get_next_index = function(){
 MIA.playlist.prototype.transition_to_next_song = function(){
 	var self = this;
 	this.is_transitioning = true;
+	var next_index = this.get_next_index();
 	var curr_id = "#song-" + this.curr_song;
-	var next_id = "#song-" + this.get_next_index();
-	$( next_id )[0].play();
-	var transition_length = this.get_transition_length();
-	this.fade({ id : curr_id, val : 0, duration : transition_length * 1000 });
-	this.fade({ id : next_id, val : 1, duration : transition_length * 1000, callback : function(){
-		var next_index = self.get_next_index();
-		if( next_index == 0 ){
-			$( "audio" ).each(function( i, audio ){
-				if( i ){
-					audio.pause();
-					audio.currentTime = 0;
-					audio.volume      = 0;
-				}
-			});
-		}
-		self.curr_song = next_index;
-		   $( ".songs-list td.index" ).removeClass(                  'active' );
-		$( $( ".songs-list td.index" )[ self.curr_song ] ).addClass( 'active' );
-		self.is_transitioning = false;
-	} });
+	var next_id = "#song-" + next_index;
+	if( next_index !== 0 ){
+		$( next_id )[0].play();
+		var transition_length = this.get_transition_length();
+		this.fade({ id : curr_id, val : 0, duration : transition_length * 1000 });
+		this.fade({ id : next_id, val : 1, duration : transition_length * 1000, callback : function(){
+			var next_index = self.get_next_index();
+			if( next_index == 0 ){
+				$( "audio" ).each(function( i, audio ){
+					if( i ){
+						audio.pause();
+						audio.currentTime = 0;
+						audio.volume      = 0;
+					}
+				});
+			}
+			self.curr_song = next_index;
+			   $( ".songs-list td.index" ).removeClass(                  'active' );
+			$( $( ".songs-list td.index" )[ self.curr_song ] ).addClass( 'active' );
+			self.is_transitioning = false;
+		} });
+	}
 };
 
 MIA.playlist.prototype.get_curr_time = function(){
@@ -168,7 +176,7 @@ MIA.playlist.prototype.set_song = function( idx, no_autoplay ){
 	});
 	var selected_audio = $( id )[0];
 	if( !no_autoplay ) selected_audio.play();
-	selected_audio.volume = 1;
+	selected_audio.volume = this.get_max_volume( idx );
 	this.curr_song = idx;
 	   $( ".songs-list td.index" ).removeClass(                  'active' );
 	$( $( ".songs-list td.index" )[ this.curr_song ] ).addClass( 'active' );
@@ -227,6 +235,14 @@ MIA.playlist.prototype.get_content = function( self, p ){
 		'<div id="playback-controls">' +
 			'<div id="progress">' + 
 				'<div id="click-me-note">Click <i class="fa fa-play" /> to start playing this playlist.</div>' +
+				( !this.notes ? '' : 
+					'<div id="playlist-notes">' + 
+						'<div class="header">Notes<hr></div>' +
+						this.notes.map(function( note ){
+							return '<div class="note">&bull; &nbsp; ' + note + '</div>';
+						}).join('') +
+					'</div>'
+				) +
 				'<div class="songs-control no-highlight click-me" onclick="MIA.content.curr_view.resume();" id="play-button"><i class="fa fa-play"></i></div>' +
 				'<div class="songs-control no-highlight"          onclick="MIA.content.curr_view.pause();"                  ><i  class="fa fa-pause"></i></div>' +
 				'<div class="songs-info wide">' + 
