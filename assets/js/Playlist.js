@@ -78,7 +78,7 @@ MIA.playlist.prototype.fade_in = function(){
 	}
 };
 
-MIA.playlist.prototype.fade_out = function(){
+MIA.playlist.prototype.fade_out = function( callback ){
 	var self = this;
 	var id = 'audio';
 	if( !$( id ).is( ':animated' ) ){
@@ -89,6 +89,7 @@ MIA.playlist.prototype.fade_out = function(){
 				duration : 3000,
 				callback : function(){
 					self.pause();
+					if( callback ) callback();
 				},
 			});
 		}
@@ -101,14 +102,16 @@ MIA.playlist.prototype.fade = function( p ){
 
 MIA.playlist.prototype.get_transition_length = function( song_idx ){
 	var curr_song_cfg = this.songs[ song_idx !== undefined ? song_idx : this.curr_song ];
-	var transition_length = MIA.config.transition_length;
+	var transition_length = ( this.songs.length > 1 ? MIA.config.transition_length : 0 );
 	if( curr_song_cfg.transition_out !== undefined ) transition_length = curr_song_cfg.transition_out;
 	return transition_length;
 };
 
 MIA.playlist.prototype.get_end_offset = function( song_idx ){
 	var curr_song_cfg = this.songs[ song_idx !== undefined ? song_idx : this.curr_song ];
-	return curr_song_cfg.end_early || 0;
+	var val = curr_song_cfg.end_early || 0;
+	if( curr_song_cfg.end_early ) val -= this.get_transition_length( song_idx );
+	return val;
 };
 
 MIA.playlist.prototype.get_max_volume = function( song_idx ){
@@ -145,6 +148,11 @@ MIA.playlist.prototype.transition_to_next_song = function(){
 			$( $( ".songs-list td.index" )[ self.curr_song ] ).addClass( 'active' );
 			self.is_transitioning = false;
 		} });
+	}
+	else{
+		this.fade_out(function(){
+			self.is_transitioning = false;
+		});
 	}
 };
 
